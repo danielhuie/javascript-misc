@@ -18,6 +18,10 @@ function onReady() {
     //add an event listener for the 'submit' event passing onSubmit as the event handler function
     ageForm.addEventListener('submit', onSubmit);
 
+    if (window.localStorage) {
+        ageForm.elements['name'].value = window.localStorage.getItem('defaultName');
+    }
+
     //add an event listener for the 'click' event on the exit button
     //for this one we will use an inline anonymous function so that you can get used to those
     var exitButton = document.getElementById('exit-button');
@@ -30,6 +34,13 @@ function onReady() {
     var resetButton = document.getElementById('reset-button');
     resetButton.addEventListener('click', function() {
        document.getElementById('age-message').style.display = 'none';
+    });
+
+    var nameInput = ageForm.elements['name'];
+    nameInput.addEventListener('change', function() {
+       if (window.localStorage) {
+           window.localStorage.setItem('defaultName', this.value);
+       }
     });
 
 } //onReady()
@@ -130,6 +141,11 @@ function calculateAge(dob) {
  * */
 function displayAge(name, age) {
     //use displayMessage() to display the name and age
+    var nameRegEx = new RegExp('^\\D+$');
+    if (!nameRegEx.test(name)) {
+        throw new Error('Your name cannot contain numbers!');
+    }
+
     displayMessage(name + ', you are ' + age + ' years old!');
 } //displayAge()
 
